@@ -9,6 +9,10 @@ p, h1, h2, h3 {
     font-family: "Quicksand", sans-serif;
 }
 
+p {
+    margin: 50px 0;
+}
+
 pre {
     font-family: "Edu AU VIC WA NT Arrows", cursive;
 }
@@ -43,6 +47,11 @@ canvas {
 
 .controls {
     margin-bottom: 10px;
+}
+
+#botao-limpar-desenho {
+    color:white;
+    background-color: #1a1a1a;
 }
 
 @keyframes floatUp {
