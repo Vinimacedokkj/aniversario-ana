@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TESTE 2</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Arrows:wght@700..700&family=Quicksand:wght@300..700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        p, h1, h2, h3 {
+            font-family: "Quicksand", sans-serif;
+        }
+
+        p {
+            margin: 50px 0;
+        }
+
+        pre {
+            font-family: "Edu AU VIC WA NT Arrows", cursive;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 1.5em;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 2px solid black;
+            cursor: crosshair;
+        }
+
+        #outlineCanvas {
+            z-index: 2;
+            pointer-events: none; /* Permite que cliques atravessem este canvas */
+        }
+
+        #paintCanvas {
+            z-index: 1;
+            background-color: white;
+        }
+
+        .controls {
+            margin-bottom: 10px;
+        }
+
+        #clearCanvas, #eraser {
+            background-color: #ff69b4;
+            color: white;
+            border-radius: 20px;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .imagem-preview {
+            margin-bottom: 20px;
+        }
+
+        .imagem-preview img {
+            max-width: 300px;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <main class="container-principal">
+        
+        <div>
+            <h2>🎨 Pinte com amor 🎨</h2>
+            
+            <div class="imagem-preview">
+                <p>Imagem que você vai colorir:</p>
+                <img src="https://i.pinimg.com/736x/7f/3f/91/7f3f91a35e6e929306d666981219fdcb.jpg" alt="hello kitty" id="previewImage">
+            </div>
+
+            <div class="controls">
+                <input type="color" id="colorPicker" value="#ff69b4">
+                <input type="range" id="brushSize" min="1" max="20" value="5">
+                <button id="clearCanvas">Limpar</button>
+                <button id="eraser">Borracha</button>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="paintCanvas" width="600" height="600"></canvas>
+                <canvas id="outlineCanvas" width="600" height="600"></canvas>
+            </div>
+        </div>
+
+        <script>
+            const paintCanvas = document.getElementById("paintCanvas");
+            const outlineCanvas = document.getElementById("outlineCanvas");
+            const paintCtx = paintCanvas.getContext("2d");
+            const outlineCtx = outlineCanvas.getContext("2d");
+            const colorPicker = document.getElementById("colorPicker");
+            const brushSize = document.getElementById("brushSize");
+            const clearCanvas = document.getElementById("clearCanvas");
+            const eraser = document.getElementById("eraser");
+            
+            let painting = false;
+            let erasing = false;
+            let originalImageData = null;
+            
+            // Carrega a imagem do contorno e mantém uma cópia dos pixels pretos
+            const outlineImage = new Image();
+            outlineImage.crossOrigin = "Anonymous"; // Permite carregar imagens de outros domínios
+            outlineImage.src = document.getElementById("previewImage").src;
+            
+            outlineImage.onload = () => {
+                // Ajusta o tamanho dos canvas para corresponder às proporções da imagem
+                const aspectRatio = outlineImage.width / outlineImage.height;
+                
+                let canvasWidth = paintCanvas.width;
+                let canvasHeight = canvasWidth / aspectRatio;
+                
+                // Se a altura calculada for maior que o canvas, ajusta a largura
+                if (canvasHeight > paintCanvas.height) {
+                    canvasHeight = paintCanvas.height;
+                    canvasWidth = canvasHeight * aspectRatio;
+                }
+                
+                // Centraliza a imagem no canvas
+                const offsetX = (paintCanvas.width - canvasWidth) / 2;
+                const offsetY = (paintCanvas.height - canvasHeight) / 2;
+                
+                // Desenha a imagem no canvas de contorno
+                outlineCtx.clearRect(0, 0, outlineCanvas.width, outlineCanvas.height);
+                outlineCtx.drawImage(outlineImage, offsetX, offsetY, canvasWidth, canvasHeight);
+                
+                // Extrai os dados da imagem
+                const imageData = outlineCtx.getImageData(0, 0, outlineCanvas.width, outlineCanvas.height);
+                const data = imageData.data;
+                
+                // Cria uma máscara onde apenas os pixels escuros (pretos ou próximos) permanecem
+                for (let i = 0; i < data.length; i += 4) {
+                    // Verifica se o pixel é escuro
+                    // Calcula a luminosidade (0 para preto, 255 para branco)
+                    const luminosity = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                    
+                    // Verifica se é um traço escuro (ajuste o limiar conforme necessário)
+                    const isOutline = luminosity < 100;
+                    
+                    // Se não for um traço escuro, torna transparente
+                    if (!isOutline) {
+                        data[i + 3] = 0; // Torna o alfa transparente
+                    } else {
+                        // Converte para preto puro para melhor visualização
+                        data[i] = 0;
+                        data[i + 1] = 0;
+                        data[i + 2] = 0;
+                        data[i + 3] = 255; // Totalmente opaco
+                    }
+                }
+                
+                // Coloca os dados modificados de volta no canvas de contorno
+                outlineCtx.clearRect(0, 0, outlineCanvas.width, outlineCanvas.height);
+                outlineCtx.putImageData(imageData, 0, 0);
+                
+                // Salva os dados das linhas pretas para uso na função isOutlinePixel
+                originalImageData = imageData;
+                
+                // Preenche o canvas de pintura com branco
+                paintCtx.fillStyle = "white";
+                paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+            };
+            
+            // Função para verificar se um pixel é um traço de contorno na imagem original
+            function isOutlinePixel(x, y) {
+                if (!originalImageData) return false;
+                
+                // Garante que as coordenadas estão dentro dos limites
+                if (x < 0 || y < 0 || x >= outlineCanvas.width || y >= outlineCanvas.height) {
+                    return false;
+                }
+                
+                const index = (y * outlineCanvas.width + x) * 4;
+                const alpha = originalImageData.data[index + 3];
+                
+                // Se o pixel tem alguma opacidade, é um traço de contorno
+                return alpha > 0;
+            }
+            
+            function startPosition(e) {
+                const rect = paintCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Não permite pintar em pixels de contorno da imagem original
+                if (!isOutlinePixel(Math.floor(x), Math.floor(y))) {
+                    painting = true;
+                    draw(e);
+                }
+            }
+            
+            function endPosition() {
+                painting = false;
+                paintCtx.beginPath();
+            }
+            
+            function draw(e) {
+                if (!painting) return;
+                
+                const rect = paintCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Não permite pintar em pixels de contorno da imagem original
+                if (isOutlinePixel(Math.floor(x), Math.floor(y))) {
+                    painting = false;
+                    paintCtx.beginPath();
+                    return;
+                }
+                
+                paintCtx.lineWidth = brushSize.value;
+                paintCtx.lineCap = "round";
+                paintCtx.strokeStyle = erasing ? "white" : colorPicker.value;
+                
+                paintCtx.lineTo(x, y);
+                paintCtx.stroke();
+                paintCtx.beginPath();
+                paintCtx.moveTo(x, y);
+            }
+            
+            // Funcionalidade para dispositivos móveis/touchscreen
+            function handleTouch(e) {
+                e.preventDefault(); // Previne o comportamento padrão de toque (como scroll)
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent("mousemove", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                draw(mouseEvent);
+            }
+            
+            paintCanvas.addEventListener("mousedown", startPosition);
+            paintCanvas.addEventListener("mouseup", endPosition);
+            paintCanvas.addEventListener("mousemove", draw);
+            paintCanvas.addEventListener("mouseleave", endPosition);
+            
+            // Eventos para dispositivos touchscreen
+            paintCanvas.addEventListener("touchstart", function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent("mousedown", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                startPosition(mouseEvent);
+            });
+            
+            paintCanvas.addEventListener("touchend", function(e) {
+                e.preventDefault();
+                endPosition();
+            });
+            
+            paintCanvas.addEventListener("touchmove", handleTouch);
+            
+            clearCanvas.addEventListener("click", () => {
+                paintCtx.fillStyle = "white";
+                paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+            });
+            
+            eraser.addEventListener("click", () => {
+                erasing = !erasing;
+                eraser.textContent = erasing ? "Pincel" : "Borracha";
+            });
+        </script>
+    </main>
+</body>
+</html>

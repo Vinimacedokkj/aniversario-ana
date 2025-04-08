@@ -49,9 +49,13 @@ canvas {
     margin-bottom: 10px;
 }
 
-#botao-limpar-desenho {
-    color:white;
-    background-color: #1a1a1a;
+#clearCanvas, #eraser {
+    background-color: #ff69b4;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 
 @keyframes floatUp {
