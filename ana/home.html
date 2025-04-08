@@ -12,7 +12,7 @@
 
         <img src="img/ANA CLARA.png" alt="ANA LINDA">
 
-        <p class="by-seu-namorado">By<br>Seu namorado garoto de programa 👍</p>
+        <p class="by-seu-namorado">By<br>Seu (futuro namorado) garoto de programa 👍</p>
         
 
         <div class="container-musica">
@@ -23,11 +23,13 @@
 
             <p>Olha, o Youtube Music é MUITO melhor, não tem nem comparação, mas eu coloquei spotify pq vc usa, af, essa bagaça véia ai que ninguém gosta</p>
 
-            <p>Pode dar play e aproveitar, meu amor</p>
+            <!-- <p>Pode dar play e aproveitar, meu amor</p> -->
 
             <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5A7CwBNDUhvLWuSU5oJEh3?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-            <p>Nessas músicas abaixo, esses são os sentimentos que quero passar</p>
-            <p>Vou traduzir não, vc é fluente, não mete o louco não KKKKKKKKKKKKK, ce entende tudinho</p>
+            <p>Nas músicas abaixo, todas as lyrics que eu peguei, são as partes em que quero passr como sentimento</p>
+            <p>Vou traduzir não, vc é fluente in english, não mete o louco não KKKKKKKKKKKKK, ce entende tudinho</p>
+
+            <p>Parte na música Moonlight da Ari (nossa diva):</p>
             <pre>
 Every look (every look)
 Every touch (every touch)
@@ -128,50 +130,54 @@ it's about you and me
 
             <p>Bom, agora algumas coisinhas que seria interessante você saber</p>
 
-            <pre>
-A brisa leve de uma tarde, o nascer do sol depois de uma noite longa, a calmaria de uma risada sincera... tudo isso me lembra você.
+<pre>
+<span class="destaque">A</span> brisa leve de uma tarde, o <span class="destaque">n</span>ascer do sol depois de uma noite longa
 
-Você é aquela pessoa que, mesmo sem tentar, faz tudo parecer melhor.
+<span class="destaque">A</span> calmaria de uma risada <span class="destaque">s</span>incera... tudo isso me lembra você.
 
-Em cada detalhe, tem um pouco de luz.
+V<span class="destaque">o</span>cê é aq<span class="destaque">u</span>ela pessoa que, mesmo sem tentar, f<span class="destaque">a</span>z tudo <span class="destaque">p</span>arecer melhor.
 
-Um olhar, uma palavra, uma presença — e tudo ganha cor.
+Em cada det<span class="destaque">a</span>lhe, tem um pouco de luz.
 
-Se eu pudesse explicar, diria que é como encontrar um lugar seguro no meio do caos.
+Um olhar, uma <span class="destaque">i</span>deia, uma presença — e tudo ganha cor.
 
-Ouvir sua voz me acalma.
+Se eu pudesse e<span class="destaque">x</span>pl<span class="destaque">o</span>rar, diria que é como encontrar um lugar seguro no meio do caos.
 
-Um simples "oi" já muda meu dia, se leio um "meu bem", "amor", "anjo", meu coração já dispara.
+Ouvir sua <span class="destaque">n</span>atureza me acalma.
 
-A verdade é que meu coração encontrou paz em você.
+Um simples "oi" já muda meu <span class="destaque">a</span>nimo.
 
-Por mais que eu tente disfarçar, está estampado no meu sorriso.
+Se leio um "meu bem", "amor", "<span class="destaque">d</span>oce", meu coração já dispara.
 
-A cada dia, fico mais certo:
+A verdade é que meu coração en<span class="destaque">o</span>ntrou paz em você.
 
-Incrível é te ter por perto.
+<span class="destaque">Por</span> mais que eu tenha disfarçar, está estampado no meu sorriso.
 
-Xispa qualquer dúvida — meu sentimento é real.
+A cada dia, fico mais dedicado:
 
-O meu mundo, com você, tem sentido.
+Incrível é te ter por oportunidade.
 
-Não sei explicar de outro jeito,
+Xispa qualquer dúvida — porque meu sentimento é real.
+
+O meu mundo, com você, tem outro sentido.
+
+Não sei explicar de outro realidade,
 
 A não ser dizendo que
 
-Dentro de mim,
+Dentro de vários sentimentos,
 
-O que existe é amor.
+O que existe é organicamente amor.
 
-Por você.
+Por causa de <span class="destaque">você</span>.
 
-O tempo passa, mas só cresce.
+O tempo passa, mas só evolui.
 
 Realmente…
 
 Você é única.
 
-Completamente."
+Completamente.
             </pre>
         </div>
 
@@ -185,9 +191,15 @@ Completamente."
 
         <div>
             <h2>🎨 Pinte com amor 🎨</h2>
-            <canvas class="paint-area" id="paintCanvas"></canvas>
-            <br>
-            <button onclick="clearCanvas()">Limpar</button>
+            <p>Olha, eu sei que isso não é necessariamente um livrinho igual Bobbie Goods com versão da Hello Kitty (pois sei que você quer esse), porém é um pequeno desenho para você colorir</p>
+            
+            <div class="controls">
+                <input type="color" id="colorPicker" value="#000000">
+                <input type="range" id="brushSize" min="1" max="20" value="5">
+                <button id="clearCanvas">Limpar</button>
+                <button id="eraser">Borracha</button>
+            </div>
+            <canvas id="paintCanvas" width="600" height="400"></canvas>
         </div>
 
         <!--

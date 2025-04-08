@@ -1,3 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Arrows:wght@700..700&family=Quicksand:wght@300..700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+p, h1, h2, h3 {
+    font-family: "Quicksand", sans-serif;
+}
+
+pre {
+    font-family: "Edu AU VIC WA NT Arrows", cursive;
+}
+
 body {
     background-color: #1a1a1a;
     color: white;
@@ -14,46 +29,22 @@ h1 {
     justify-content: flex-end;
 }
 
-.container-playlist {
-    /* border: 2px solid yellow; */
-
-    margin: 20px 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.destaque {
+    color: yellowgreen;
 }
 
-.playlist {
-    /* border: 3px solid red; */
-    width: 50%;
-    height: 500px;
-}
-
-.paint-area {
-    border: 2px solid #ff69b4;
-    background: white;
-    width: 300px;
-    height: 300px;
-    margin: 20px auto;
+canvas {
+    border: 2px solid black;
     cursor: crosshair;
+    background: url('img/hello_kitty.jpeg') no-repeat center;
+    background-size: contain;
+    background-color: white;
 }
-button {
-    background: #ff69b4;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-size: 16px;
+
+.controls {
+    margin-bottom: 10px;
 }
-.heart {
-    position: absolute;
-    font-size: 24px;
-    color: #ff69b4;
-    animation: floatUp 2s linear forwards;
-}
+
 @keyframes floatUp {
     0% { transform: translateY(0); opacity: 1; }
     100% { transform: translateY(-100px); opacity: 0; }

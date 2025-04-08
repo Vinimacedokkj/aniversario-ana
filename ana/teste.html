@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Minha Namorada 💖</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Arrows:wght@700..700&family=Quicksand:wght@300..700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+p, h1, h2, h3 {
+    font-family: "Quicksand", sans-serif;
+}
+
+pre {
+    font-family: "Edu AU VIC WA NT Arrows", cursive;
+}
+
+body {
+    background-color: #1a1a1a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+h1 {
+    font-size: 1.5em;
+}
+
+.by-seu-namorado {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.destaque {
+    color: yellowgreen;
+}
+
+canvas {
+    border: 2px solid black;
+    cursor: crosshair;
+    background-color: transparent;
+}
+
+.controls {
+    margin-bottom: 10px;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100px); opacity: 0; }
+}
+    </style>
+</head>
+<body>
+    <main class="container-principal">
+        <h1 style="color: #ff69b4;">💖 Bem-vinda ao seu cantinho especial 💖</h1>
+
+        <img src="img/ANA CLARA.png" alt="ANA LINDA">
+
+        <p class="by-seu-namorado">By<br>Seu (futuro namorado) garoto de programa 👍</p>
+
+        <!-- conteúdo removido para brevidade -->
+
+        <div>
+            <h2>🎨 Pinte com amor 🎨</h2>
+            <p>Olha, eu sei que isso não é necessariamente um livrinho igual Bobbie Goods com versão da Hello Kitty (pois sei que você quer esse), porém é um pequeno desenho para você colorir</p>
+            
+            <div class="controls">
+                <input type="color" id="colorPicker" value="#000000">
+                <input type="range" id="brushSize" min="1" max="20" value="5">
+                <button id="clearCanvas">Limpar</button>
+                <button id="eraser">Borracha</button>
+            </div>
+            <div style="position: relative; display: inline-block;">
+                <canvas id="paintCanvas" width="600" height="400" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+                <img src="img/hello_kitty_png.png" width="600" height="400" style="position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none;">
+            </div>
+        </div>
+
+        <script>
+        const canvas = document.getElementById("paintCanvas");
+        const ctx = canvas.getContext("2d");
+        const colorPicker = document.getElementById("colorPicker");
+        const brushSize = document.getElementById("brushSize");
+        const clearCanvas = document.getElementById("clearCanvas");
+        const eraser = document.getElementById("eraser");
+        let painting = false;
+        let erasing = false;
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineWidth = brushSize.value;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = erasing ? "white" : colorPicker.value;
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        canvas.addEventListener("mousedown", startPosition);
+        canvas.addEventListener("mouseup", endPosition);
+        canvas.addEventListener("mousemove", draw);
+
+        clearCanvas.addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        eraser.addEventListener("click", () => {
+            erasing = !erasing;
+            eraser.textContent = erasing ? "Pincel" : "Borracha";
+        });
+        </script>
+    </main>
+</body>
+</html>
